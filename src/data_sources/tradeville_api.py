@@ -123,7 +123,7 @@ class TradevilleAPI:
             return await self.__send_and_receive(websocket, header)
 
     async def get_symbol_orders(self, symbol):
-        '''Returneaza oridinele pe un anumit simbol (daca este specificat un simbol)'''
+        '''Returneaza oridinele pe un anumit simbol'''
         async with websockets.connect(
             uri=f"{TRADEVILLE_URI}:{TRADEVILLE_PORT}", subprotocols=["apitv"]
         ) as websocket:

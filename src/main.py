@@ -6,12 +6,20 @@ from src.data_sources.tradeville_api import TradevilleAPI
 from src.data_sources.yahoofinance_api import YahooFinanceAPI
 
 from src.processing.tradeville_data_processing import TradevilleDataProcessing
+from src.ingestion.ingest_data import MarketDataIngestor
+
+# print(yahoofinance_api.get_symbol_history_data("SNN.RO", "1wk", "2025-05-20", "2025-10-20"))
+# (industry, sector) = yahoofinance_api.get_symbol_industry_and_sector("SNP.RO")
+# print(industry + "\n" + sector)
+# #yahoofinance_api.get_symbol_history_data("INTL", "1mo", "2025-07-01", "2025-10-01")
+# print(yahoofinance_api.get_symbol_dividends_history("SNP.RO"))
 
 yahoofinance_api = YahooFinanceAPI()
-(industry, sector) = yahoofinance_api.get_symbol_industry_and_sector("SNP.RO")
-print(industry + "\n" + sector)
-#yahoofinance_api.get_symbol_history_data("INTL", "1mo", "2025-07-01", "2025-10-01")
-print(yahoofinance_api.get_symbol_dividends_history("SNP.RO"))
+tradeville_api = TradevilleAPI()
+ingestor = MarketDataIngestor(tradeville_api, yahoofinance_api)
+data = asyncio.run(ingestor.get_portfolio_snapshot())
+print(data)
+
 
 # tradeville_api_connection = TradevilleAPI()
 # tradeville_data_processing = TradevilleDataProcessing()
@@ -48,7 +56,7 @@ print(yahoofinance_api.get_symbol_dividends_history("SNP.RO"))
 # response = asyncio.run(tradeville_api_connection.get_symbol_daily_values("SNP", "1oct25", "15oct25"))
 # daily_values = tradeville_data_processing.to_dataframe(response["data"])
 # print(daily_values)
-
+#
 # response = asyncio.run(tradeville_api_connection.get_symbol_market_depth("BRD", 10))
 # print(response)
 # market_depth = tradeville_data_processing.to_dataframe(response["data"])
