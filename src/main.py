@@ -2,10 +2,10 @@
 import asyncio
 import pandas as pd
 
+
 from src.data_sources.tradeville_api import TradevilleAPI
 from src.data_sources.yahoofinance_api import YahooFinanceAPI
 
-from src.processing.tradeville_data_processing import TradevilleDataProcessing
 from src.ingestion.ingest_data import MarketDataIngestor
 
 # print(yahoofinance_api.get_symbol_history_data("SNN.RO", "1wk", "2025-05-20", "2025-10-20"))
@@ -14,19 +14,24 @@ from src.ingestion.ingest_data import MarketDataIngestor
 # #yahoofinance_api.get_symbol_history_data("INTL", "1mo", "2025-07-01", "2025-10-01")
 # print(yahoofinance_api.get_symbol_dividends_history("SNP.RO"))
 
-yahoofinance_api = YahooFinanceAPI()
-tradeville_api = TradevilleAPI()
-ingestor = MarketDataIngestor(tradeville_api, yahoofinance_api)
-data = asyncio.run(ingestor.get_portfolio_snapshot())
-print(data)
+# async def main():
+#     yahoofinance_api = YahooFinanceAPI()
+#     tradeville_api = TradevilleAPI()
+#     ingestor = MarketDataIngestor(tradeville_api, yahoofinance_api)
+#
+#     data = await ingestor.get_portfolio_snapshot()
+#     print(data)
+# if __name__ == "__main__":
+#     asyncio.run(main())
 
 
+
+
+#
 # tradeville_api_connection = TradevilleAPI()
-# tradeville_data_processing = TradevilleDataProcessing()
 #
 # response = asyncio.run(tradeville_api_connection.get_portfolio())
-# portfolio_df = tradeville_data_processing.to_dataframe(response["data"])
-# print(portfolio_df)
+# print(response)
 #
 # response = asyncio.run(tradeville_api_connection.search_symbol("electric"))
 # search_symbol_df = tradeville_data_processing.to_dataframe(response["data"])
