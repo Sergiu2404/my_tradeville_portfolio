@@ -15,8 +15,8 @@ class TradevilleAPI:
     __tradeville_login_header = {
         "cmd": "login",
         "prm": {
-            "coduser": dotenv.dotenv_values("./../.env")["CODUSER"],
-            "parola": dotenv.dotenv_values("./../.env")["PASSWORD"],
+            "coduser": dotenv.dotenv_values("./../../.env")["CODUSER"],
+            "parola": dotenv.dotenv_values("./../../.env")["PASSWORD"],
             "demo": False
         }
     }
@@ -185,3 +185,36 @@ class TradevilleAPI:
                 }
             }
             return await self.__send_and_receive(websocket, header)
+
+tradeville_api_connection = TradevilleAPI()
+import asyncio
+#
+# response = asyncio.run(tradeville_api_connection.get_portfolio())
+# print(response)
+#
+# response = asyncio.run(tradeville_api_connection.search_symbol("electric"))
+# print(response)
+#
+# response = asyncio.run(tradeville_api_connection.get_symbol_data("AT.OMV"))
+# print(response)
+#
+# response = asyncio.run(tradeville_api_connection.get_symbol_orders("BRD"))
+# print(response)
+#
+# response = asyncio.run(tradeville_api_connection.get_symbol_trades("BRD", "1oct25", "10oct25"))
+# print(response)
+#
+# response = asyncio.run(tradeville_api_connection.get_account_activity("1jan25", "10oct25"))
+# print(response)
+#
+# response = asyncio.run(tradeville_api_connection.get_bnr_exchange_rate("EUR", "1apr25", "10apr25"))
+# print(response)
+#
+# response = asyncio.run(tradeville_api_connection.get_symbol_daily_values("SNP", "1oct25", "15oct25"))
+# print(response)
+#
+# response = asyncio.run(tradeville_api_connection.get_symbol_market_depth("BRD", 10))
+# print(response)
+#
+# response = asyncio.run(tradeville_api_connection.subscribe_to_symbol("TLV"))
+# print(response)
