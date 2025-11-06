@@ -204,7 +204,7 @@ import asyncio
 # response = asyncio.run(tradeville_api_connection.get_symbol_trades("BRD", "1oct25", "10oct25"))
 # print(response)
 #
-# response = asyncio.run(tradeville_api_connection.get_account_activity("1jan23", "10apr23"))
+# response = asyncio.run(tradeville_api_connection.get_account_activity("1jan23", "10aug23"))
 # print(response)
 #
 # response = asyncio.run(tradeville_api_connection.get_bnr_exchange_rate("EUR", "1apr25", "10apr25"))

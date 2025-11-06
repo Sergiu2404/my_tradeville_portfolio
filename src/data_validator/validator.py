@@ -35,10 +35,19 @@ class Validator:
         if latest_daily_values_record_df.empty:
             return new_daily_values_df
 
-        latest_date = latest_daily_values_record_df["Date"].iloc[0]
+        latest_date = pd.to_datetime(latest_daily_values_record_df["Date"].iloc[0])
+        new_daily_values_df["Date"] = pd.to_datetime(new_daily_values_df["Date"])
         filtered_df = new_daily_values_df[new_daily_values_df["Date"] > latest_date]
 
         return filtered_df
 
+    def validate_account_activity(self, latest_account_activity: pd.DataFrame, new_account_activity: pd.DataFrame):
+        if latest_account_activity.empty:
+            return new_account_activity
+
+        latest_date = latest_account_activity["Date"].iloc[0]
+        filtered_df = new_account_activity[new_account_activity["Date"] > latest_date]
+
+        return filtered_df
 
 
