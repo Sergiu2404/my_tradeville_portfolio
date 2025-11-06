@@ -1,5 +1,9 @@
 import pandas as pd
 import numpy as np
+import pytz
+from datetime import datetime
+
+BUCHAREST_TIMEZONE = pytz.timezone("Europe/Bucharest")
 
 from src.data_sources.tradeville_api import TradevilleAPI
 from src.data_sources.yahoofinance_api import YahooFinanceAPI
@@ -16,7 +20,7 @@ class MarketDataIngestor:
 
         for col in ["Industry", "Sector", "StockMarket"]:
             if col not in portfolio_data.columns:
-                portfolio_data[col] = np.nan
+                portfolio_data[col] = pd.NA
 
         for idx, row in portfolio_data.iterrows():
             symbol = str(row["Symbol"]).strip().upper()
@@ -28,11 +32,15 @@ class MarketDataIngestor:
             portfolio_data.at[idx, "Industry"] = symbol_info.get("industry")
             portfolio_data.at[idx, "Sector"] = symbol_info.get("sector")
 
-        return portfolio_data
+        today_bucharest = datetime.now(BUCHAREST_TIMEZONE).date().strftime("%Y-%m-%d")
+        portfolio_data["SnapshotDate"] = today_bucharest
+
+        return portfolio_data.drop(columns="Account")
 
     async def get_portfolio_daily_data(self, start_date, end_date):
-        symbols = await self.__get_portfolio_symbols()
-
+        symbols = await self.__get_bought_symbols_portfolio(start_date, end_date)
+        if not symbols:
+            return pd.DataFrame()
         all_data = []
 
         for symbol in symbols:
@@ -46,17 +54,19 @@ class MarketDataIngestor:
 
         if all_data:
             df = pd.concat(all_data, ignore_index=True)
-            df = df.drop(columns=["Open", "Low"], errors="ignore")
+            df = df.drop(columns=["Open", "Low", "High"], errors="ignore")
             return df
         return pd.DataFrame()
-
 
     async def get_account_activity(self, date_start, date_end) -> pd.DataFrame:
         response = await self.__tradeville_api.get_account_activity(date_start, date_end)
         return pd.DataFrame(response.get("data", []) or {})
 
     async def get_portfolio_dividends_history(self, start_date, end_date):
-        symbols = await self.__get_portfolio_symbols()
+        symbols = await self.__get_bought_symbols_portfolio(start_date, end_date)
+        if not symbols:
+            print("No bought symbols until this day")
+            return pd.DataFrame()
         all_symbols_dividends = []
         for symbol in symbols:
             try:
@@ -66,16 +76,28 @@ class MarketDataIngestor:
             except Exception as e1:
                 print(f"Dividends for symbol {symbol}.RO not found on yfinance: {e1}, trying {symbol}")
                 try:
-                    symbol_dividends_history = self.__yahoofinance_api.get_symbol_dividends_history(symbol, start_date, end_date)
+                    symbol_dividends_history = self.__yahoofinance_api.get_symbol_dividends_history(
+                        symbol, start_date, end_date
+                    )
                     symbol_dividends_history["Symbol"] = symbol
                     all_symbols_dividends.append(symbol_dividends_history)
                 except Exception as e2:
                     print(f"Dividends for symbol {symbol} not found on yfinance: {e2}, search over")
         if all_symbols_dividends:
-            df = pd.concat(all_symbols_dividends, ignore_index=True)
-            return df
+            return pd.concat(all_symbols_dividends, ignore_index=True)
         else:
             return pd.DataFrame()
+
+
+    async def __get_bought_symbols_portfolio(self, date_start, date_end) -> set[str]:
+        account_activity_response = await self.__tradeville_api.get_account_activity(date_start, date_end)
+        account_activity_data = pd.DataFrame(account_activity_response.get("data", []) or {})
+        if account_activity_data.empty:
+            return set()
+        bought_symbols = account_activity_data.loc[account_activity_data["OpType"].str.lower() == "buy", "Symbol"]
+        bought_symbols = bought_symbols.dropna().astype(str).str.strip().str.upper()
+
+        return set(bought_symbols)
 
     async def __get_symbol_daily_data(self, symbol, start_date, end_date) -> pd.DataFrame:
         response = await self.__tradeville_api.get_symbol_daily_values(symbol, start_date, end_date)
@@ -121,11 +143,10 @@ class MarketDataIngestor:
         return "RO"
 
 
-# yf = YahooFinanceAPI()
-# tr = TradevilleAPI()
-# ing = MarketDataIngestor(tr, yf)
-# import asyncio
-# result = asyncio.run(ing.get_portfolio_dividends_history("2025-02-10", "2025-10-10"))
-# print(result.columns)
-# print(result)
+yf = YahooFinanceAPI()
+tr = TradevilleAPI()
+ing = MarketDataIngestor(tr, yf)
+import asyncio
+result = asyncio.run(ing.get_portfolio_dividends_history("2023-02-10", "2025-10-10"))
+print(result)
 

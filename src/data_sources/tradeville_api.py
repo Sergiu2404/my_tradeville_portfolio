@@ -34,7 +34,7 @@ class TradevilleAPI:
         serialized_json = self.__to_json(self.__tradeville_login_header)
         await websocket.send(serialized_json)
         response = await websocket.recv()
-        print(response)
+        # print(response)
 
     async def __send_and_receive(self, websocket, tradeville_request_header):
         await self.__login(websocket)
@@ -204,13 +204,13 @@ import asyncio
 # response = asyncio.run(tradeville_api_connection.get_symbol_trades("BRD", "1oct25", "10oct25"))
 # print(response)
 #
-# response = asyncio.run(tradeville_api_connection.get_account_activity("1jan25", "10oct25"))
+# response = asyncio.run(tradeville_api_connection.get_account_activity("1jan23", "10apr23"))
 # print(response)
 #
 # response = asyncio.run(tradeville_api_connection.get_bnr_exchange_rate("EUR", "1apr25", "10apr25"))
 # print(response)
 #
-# response = asyncio.run(tradeville_api_connection.get_symbol_daily_values("SNP", "1oct25", "15oct25"))
+# response = asyncio.run(tradeville_api_connection.get_symbol_daily_values("SNP", "1oct25", "8oct25"))
 # print(response)
 #
 # response = asyncio.run(tradeville_api_connection.get_symbol_market_depth("BRD", 10))

@@ -7,6 +7,19 @@ from psycopg2.extras import execute_values
 
 load_dotenv()
 
+STOCK_SYMBOLS_COLUMNS_MAP = {
+    "name": "Name",
+    "ticker": "Symbol",
+    "market": "Market",
+    "sector": "Sector"
+}
+STOCK_SYMBOLS_COLUMNS_TYPES_MAP = {
+    "Name": "VARCHAR(80)",
+    "Symbol": "VARCHAR(10)",
+    "Market": "VARCHAR(5)",
+    "Sector": "VARCHAR(100)"
+}
+
 HUGGING_FACE_BVB_SYMBOLS = "hf://datasets/ThunderDrag/Romania-Stock-Symbols-and-Metadata/romania.csv"
 USER = dotenv.dotenv_values("../../.env")["SUPABASE_USER"]
 PASSWORD = dotenv.dotenv_values("../../.env")["SUPABASE_PASSWORD"]
@@ -15,6 +28,7 @@ PORT = dotenv.dotenv_values("../../.env")["SUPABASE_PORT"]
 DBNAME = dotenv.dotenv_values("../../.env")["SUPABASE_DATABASE"]
 
 bvb_symbols_df = pd.read_csv(HUGGING_FACE_BVB_SYMBOLS)
+bvb_symbols_df = bvb_symbols_df.rename(columns=STOCK_SYMBOLS_COLUMNS_MAP)
 
 try:
     connection = psycopg2.connect(
@@ -28,8 +42,15 @@ try:
 
     cursor = connection.cursor()
 
-    columns_and_types = ", ".join([f"{col} TEXT" for col in bvb_symbols_df.columns])
-    create_table_query = f"CREATE TABLE IF NOT EXISTS stock_symbols ({columns_and_types});"
+    columns_and_types_sql = ", ".join([
+        f"{col} {STOCK_SYMBOLS_COLUMNS_TYPES_MAP[col]}" for col in STOCK_SYMBOLS_COLUMNS_MAP.values()
+    ])
+    create_table_query = f"""
+            CREATE TABLE IF NOT EXISTS stock_symbols (
+                id SERIAL PRIMARY KEY,
+                {columns_and_types_sql}
+            );
+    """
 
     cursor.execute(create_table_query)
     connection.commit()
@@ -38,7 +59,7 @@ try:
     connection.commit()
 
     tuples = [tuple(x) for x in bvb_symbols_df.to_numpy()]
-    cols = ','.join(list(bvb_symbols_df.columns))
+    cols = ','.join(bvb_symbols_df.columns)
     insert_query = sql.SQL("INSERT INTO stock_symbols ({}) VALUES %s").format(sql.SQL(cols))
 
     execute_values(cursor, insert_query, tuples)

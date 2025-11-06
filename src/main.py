@@ -1,12 +1,12 @@
 # pipeline to extract data from tradeville API and load to postgres db
-import asyncio
-import pandas as pd
-
-
-from src.data_sources.tradeville_api import TradevilleAPI
-from src.data_sources.yahoofinance_api import YahooFinanceAPI
-
-from src.ingestion.ingest_data import MarketDataIngestor
+# import asyncio
+# import pandas as pd
+#
+#
+# from src.data_sources.tradeville_api import TradevilleAPI
+# from src.data_sources.yahoofinance_api import YahooFinanceAPI
+#
+# from src.ingestion.ingest_data import MarketDataIngestor
 
 # print(yahoofinance_api.get_symbol_history_data("SNN.RO", "1wk", "2025-05-20", "2025-10-20"))
 # (industry, sector) = yahoofinance_api.get_symbol_industry_and_sector("SNP.RO")
@@ -70,3 +70,12 @@ from src.ingestion.ingest_data import MarketDataIngestor
 # response = asyncio.run(tradeville_api_connection.subscribe_to_symbol("TLV"))
 # subscribe = tradeville_data_processing.to_dataframe(response["data"])
 # print(subscribe)
+
+import pandas as pd
+data = {
+"a": [1, 2, 3],
+"b": ["2022-01-01", "2021-01-01", "2005-01-01"]
+}
+df = pd.DataFrame(data)
+mask = (df["b"] > "2008") & (df["b"] < "2022")
+print(mask)
