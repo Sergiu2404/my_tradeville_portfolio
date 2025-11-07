@@ -33,7 +33,6 @@ class TradevilleAPI:
         serialized_json = self.__to_json(self.__tradeville_login_header)
         await websocket.send(serialized_json)
         response = await websocket.recv()
-        # print(response)
 
     async def __send_and_receive(self, websocket, tradeville_request_header):
         await self.__login(websocket)
@@ -41,7 +40,6 @@ class TradevilleAPI:
         await websocket.send(serialized_json)
         response = await websocket.recv()
         response_json = json.loads(response)
-        print(response)
         return response_json
 
     async def get_portfolio(self):
@@ -64,12 +62,10 @@ class TradevilleAPI:
             }
             await websocket.send(self.__to_json(tradeville_subscribe_header))
             connection_confirmation = await websocket.recv()
-            print(connection_confirmation)
             try:
                 while True:
                     message = await websocket.recv()
                     data = json.loads(message)
-                    print("received data:", data)
             except:
                 print("Connection to server closed")
 
@@ -97,7 +93,6 @@ class TradevilleAPI:
         '''Returneaza activitatea din cont (pentru un simbol, intr-o perioada)'''
         header = f'{{ "cmd": "Activity", "prm": {{ "symbol": null, "dstart": "{date_start}", "dend": "{date_end}" }} }}'
         #header = '{ "cmd": "Activity", "prm": { "symbol": null, "dstart": "1jan25", "dend": "10oct25" } }'
-        print(header)
         async with websockets.connect(
                 uri=f"{config.TRADEVILLE_URI}:{config.TRADEVILLE_PORT}", subprotocols=["apitv"]
         ) as websocket:
@@ -105,7 +100,6 @@ class TradevilleAPI:
             await websocket.send(header)
             response = await websocket.recv()
             response_json = json.loads(response)
-            print(response)
             return response_json
 
     async def search_symbol(self, symbol_substring):
@@ -167,7 +161,6 @@ class TradevilleAPI:
             await self.__login(websocket)
             await websocket.send(header)
             response = await websocket.recv()
-            print(response)
             return json.loads(response)
 
     async def get_symbol_trades(self, symbol, date_start, date_end):
@@ -184,36 +177,3 @@ class TradevilleAPI:
                 }
             }
             return await self.__send_and_receive(websocket, header)
-
-tradeville_api_connection = TradevilleAPI()
-import asyncio
-#
-# response = asyncio.run(tradeville_api_connection.get_portfolio())
-# print(response)
-#
-# response = asyncio.run(tradeville_api_connection.search_symbol("electric"))
-# print(response)
-#
-# response = asyncio.run(tradeville_api_connection.get_symbol_data("AT.OMV"))
-# print(response)
-#
-# response = asyncio.run(tradeville_api_connection.get_symbol_orders("BRD"))
-# print(response)
-#
-# response = asyncio.run(tradeville_api_connection.get_symbol_trades("BRD", "1oct25", "10oct25"))
-# print(response)
-#
-# response = asyncio.run(tradeville_api_connection.get_account_activity("1jan23", "10aug23"))
-# print(response)
-#
-# response = asyncio.run(tradeville_api_connection.get_bnr_exchange_rate("EUR", "1apr25", "10apr25"))
-# print(response)
-#
-# response = asyncio.run(tradeville_api_connection.get_symbol_daily_values("SNP", "1oct25", "8oct25"))
-# print(response)
-#
-# response = asyncio.run(tradeville_api_connection.get_symbol_market_depth("BRD", 10))
-# print(response)
-#
-# response = asyncio.run(tradeville_api_connection.subscribe_to_symbol("TLV"))
-# print(response)

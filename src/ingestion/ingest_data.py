@@ -139,12 +139,3 @@ class MarketDataIngestor:
             return "FX"
 
         return "RO"
-
-
-yf = YahooFinanceAPI()
-tr = TradevilleAPI()
-ing = MarketDataIngestor(tr, yf)
-import asyncio
-result = asyncio.run(ing.get_portfolio_dividends_history("2023-02-10", "2025-10-10"))
-print(result)
-
