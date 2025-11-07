@@ -1,3 +1,5 @@
+import os
+
 import dotenv
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
@@ -59,11 +61,16 @@ ACCOUNT_ACTIVITY_COLUMNS_MAP = {
 
 START_DATE = "2023-01-01" # TODO: replace with the date when the pipelines was ran last time
 
-USER = dotenv.dotenv_values("./../.env")["SUPABASE_USER"]
-PASSWORD = dotenv.dotenv_values("./../.env")["SUPABASE_PASSWORD"]
-HOST = dotenv.dotenv_values("./../.env")["SUPABASE_HOST"]
-PORT = dotenv.dotenv_values("./../.env")["SUPABASE_PORT"]
-DBNAME = dotenv.dotenv_values("./../.env")["SUPABASE_DATABASE"]
+USER = os.environ.get("SUPABASE_USER")
+PASSWORD = os.environ.get("SUPABASE_PASSWORD")
+HOST = os.environ.get("SUPABASE_HOST")
+PORT = os.environ.get("SUPABASE_PORT")
+DBNAME = os.environ.get("SUPABASE_DATABASE")
+# USER = dotenv.dotenv_values("./../.env")["SUPABASE_USER"]
+# PASSWORD = dotenv.dotenv_values("./../.env")["SUPABASE_PASSWORD"]
+# HOST = dotenv.dotenv_values("./../.env")["SUPABASE_HOST"]
+# PORT = dotenv.dotenv_values("./../.env")["SUPABASE_PORT"]
+# DBNAME = dotenv.dotenv_values("./../.env")["SUPABASE_DATABASE"]
 
 TODAY = datetime.today().strftime("%Y-%m-%d")
 SEVEN_DAYS_AGO = datetime.today() - timedelta(days=7)
@@ -90,5 +97,7 @@ STOCK_SYMBOLS_COLUMNS_TYPES_MAP = {
 # Tradeville API
 TRADEVILLE_PORT = "443"
 TRADEVILLE_URI = "wss://api.tradeville.ro"
-TRADEVILLE_USER = dotenv.dotenv_values("./../.env")["CODUSER"],
-TRADEVILLE_PASSWORD = dotenv.dotenv_values("./../.env")["PASSWORD"],
+TRADEVILLE_USER = os.environ.get("USR"),
+TRADEVILLE_PASSWORD = os.environ.get("PSWD"),
+# TRADEVILLE_USER = dotenv.dotenv_values("./../.env")["CODUSER"],
+# TRADEVILLE_PASSWORD = dotenv.dotenv_values("./../.env")["PASSWORD"],

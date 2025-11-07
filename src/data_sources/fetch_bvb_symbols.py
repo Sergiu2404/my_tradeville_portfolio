@@ -1,12 +1,9 @@
 import pandas as pd
 import psycopg2
 from psycopg2 import sql
-from dotenv import load_dotenv
 from psycopg2.extras import execute_values
 
 from src.config import config
-
-load_dotenv()
 
 bvb_symbols_df = pd.read_csv(config.HUGGING_FACE_BVB_SYMBOLS)
 bvb_symbols_df = bvb_symbols_df.rename(columns=config.STOCK_SYMBOLS_COLUMNS_MAP)
