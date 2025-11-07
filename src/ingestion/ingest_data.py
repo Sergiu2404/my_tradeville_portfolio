@@ -1,12 +1,10 @@
 import pandas as pd
 import numpy as np
-import pytz
 from datetime import datetime
-
-BUCHAREST_TIMEZONE = pytz.timezone("Europe/Bucharest")
 
 from src.data_sources.tradeville_api import TradevilleAPI
 from src.data_sources.yahoofinance_api import YahooFinanceAPI
+from src.config import config
 
 
 class MarketDataIngestor:
@@ -32,7 +30,7 @@ class MarketDataIngestor:
             portfolio_data.at[idx, "Industry"] = symbol_info.get("industry")
             portfolio_data.at[idx, "Sector"] = symbol_info.get("sector")
 
-        today_bucharest = datetime.now(BUCHAREST_TIMEZONE).date().strftime("%Y-%m-%d")
+        today_bucharest = datetime.now(config.BUCHAREST_TIMEZONE).date().strftime("%Y-%m-%d")
         portfolio_data["SnapshotDate"] = today_bucharest
 
         return portfolio_data.drop(columns="Account")

@@ -1,7 +1,4 @@
 import pandas as pd
-import pytz
-
-BUCHAREST_TIMEZONE = pytz.timezone("Europe/Bucharest")
 
 class Validator:
     def validate_dividends(self, dividends_table_df: pd.DataFrame, new_dividends_df: pd.DataFrame):

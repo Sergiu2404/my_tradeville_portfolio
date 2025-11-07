@@ -1,81 +1,39 @@
-# pipeline to extract data from tradeville API and load to postgres db
-# import asyncio
-# import pandas as pd
-#
-#
-# from src.data_sources.tradeville_api import TradevilleAPI
-# from src.data_sources.yahoofinance_api import YahooFinanceAPI
-#
-# from src.ingestion.ingest_data import MarketDataIngestor
+import asyncio
 
-# print(yahoofinance_api.get_symbol_history_data("SNN.RO", "1wk", "2025-05-20", "2025-10-20"))
-# (industry, sector) = yahoofinance_api.get_symbol_industry_and_sector("SNP.RO")
-# print(industry + "\n" + sector)
-# #yahoofinance_api.get_symbol_history_data("INTL", "1mo", "2025-07-01", "2025-10-01")
-# print(yahoofinance_api.get_symbol_dividends_history("SNP.RO"))
+from src.data_sources.tradeville_api import TradevilleAPI
+from src.data_sources.yahoofinance_api import YahooFinanceAPI
+from src.data_validator.validator import Validator
+from src.ingestion.ingest_data import MarketDataIngestor
+from src.pipelines.account_activity_pipeline import AccountActivityPipeline
+from src.pipelines.dividends_pipeline import DividendsPipeline
+from src.pipelines.portfolio_snapshot_pipeline import PortfolioSnapshotPipeline
+from src.pipelines.portfolio_symbols_daily_values import PortfolioSymbolsDailyValues
+from src.storage.db_context import DbContext
+from src.config import config
 
-# async def main():
-#     yahoofinance_api = YahooFinanceAPI()
-#     tradeville_api = TradevilleAPI()
-#     ingestor = MarketDataIngestor(tradeville_api, yahoofinance_api)
-#
-#     data = await ingestor.get_portfolio_snapshot()
-#     print(data)
-# if __name__ == "__main__":
-#     asyncio.run(main())
+async def main():
+    db = DbContext(config.USER, config.PASSWORD, config.HOST, config.PORT, config.DBNAME)
+    ingestor = MarketDataIngestor(TradevilleAPI(), YahooFinanceAPI())
+    validator = Validator()
+
+    pipeline = AccountActivityPipeline(db, ingestor, validator)
+    await pipeline.run()
+    pipeline = DividendsPipeline(db, ingestor, validator)
+    await pipeline.run()
+    pipeline = PortfolioSnapshotPipeline(db, ingestor, validator)
+    await pipeline.run()
+    pipeline = PortfolioSymbolsDailyValues(db, ingestor, validator)
+    await pipeline.run()
 
 
+if __name__ == '__main__':
+    asyncio.run(main())
 
 
-#
-# tradeville_api_connection = TradevilleAPI()
-#
-# response = asyncio.run(tradeville_api_connection.get_portfolio())
-# print(response)
-#
-# response = asyncio.run(tradeville_api_connection.search_symbol("electric"))
-# search_symbol_df = tradeville_data_processing.to_dataframe(response["data"])
-# print(search_symbol_df)
-#
-# response = asyncio.run(tradeville_api_connection.get_symbol_data("BRD"))
-# symbol_data = tradeville_data_processing.to_dataframe(response["data"])
-# print(symbol_data)
-#
-# response = asyncio.run(tradeville_api_connection.get_symbol_orders("BRD"))
-# symbol_orders = tradeville_data_processing.to_dataframe(response["data"])
-# print(symbol_orders)
-#
-# response = asyncio.run(tradeville_api_connection.get_symbol_trades("BRD", "1oct25", "10oct25"))
-# symbol_trades = tradeville_data_processing.to_dataframe(response["data"])
-# print(symbol_trades)
-#
-# response = asyncio.run(tradeville_api_connection.get_account_activity("1jan25", "10oct25"))
-# print(response)
-# account_activity = tradeville_data_processing.to_dataframe(response["data"])
-# print(account_activity)
-#
-# response = asyncio.run(tradeville_api_connection.get_bnr_exchange_rate("EUR", "1apr25", "10apr25"))
-# exchange_rate = tradeville_data_processing.to_dataframe(response["data"])
-# print(exchange_rate)
-#
-# response = asyncio.run(tradeville_api_connection.get_symbol_daily_values("SNP", "1oct25", "15oct25"))
-# daily_values = tradeville_data_processing.to_dataframe(response["data"])
-# print(daily_values)
-#
-# response = asyncio.run(tradeville_api_connection.get_symbol_market_depth("BRD", 10))
-# print(response)
-# market_depth = tradeville_data_processing.to_dataframe(response["data"])
-# print(market_depth)
-#
-# response = asyncio.run(tradeville_api_connection.subscribe_to_symbol("TLV"))
-# subscribe = tradeville_data_processing.to_dataframe(response["data"])
-# print(subscribe)
-
-import pandas as pd
-data = {
-"a": [1, 2, 3],
-"b": ["2022-01-01", "2021-01-01", "2005-01-01"]
-}
-df = pd.DataFrame(data)
-mask = (df["b"] > "2008") & (df["b"] < "2022")
-print(mask)
+# from src.config import config
+# from src.storage.db_context import DbContext
+# db_context = DbContext(config.USER, config.PASSWORD, config.HOST, config.PORT, config.DBNAME)
+# db_context.drop_table(config.DIVIDENDS_TABLE)
+# db_context.drop_table(config.PORTFOLIO_SNAPSHOTS_TABLE)
+# db_context.drop_table(config.PORTFOLIO_SYMBOLS_DAILY_VALUES_TABLE)
+# db_context.drop_table(config.ACCOUNT_ACTIVITY_TABLE)

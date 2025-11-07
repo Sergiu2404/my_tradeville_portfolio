@@ -2,8 +2,7 @@ import json
 import websockets
 import dotenv
 
-TRADEVILLE_PORT = "443"
-TRADEVILLE_URI = "wss://api.tradeville.ro"
+from src.config import config
 
 dotenv.load_dotenv()
 
@@ -15,8 +14,8 @@ class TradevilleAPI:
     __tradeville_login_header = {
         "cmd": "login",
         "prm": {
-            "coduser": dotenv.dotenv_values("./../../.env")["CODUSER"],
-            "parola": dotenv.dotenv_values("./../../.env")["PASSWORD"],
+            "coduser": config.TRADEVILLE_USER,
+            "parola": config.TRADEVILLE_PASSWORD,
             "demo": False
         }
     }
@@ -47,14 +46,14 @@ class TradevilleAPI:
 
     async def get_portfolio(self):
         async with websockets.connect(
-            uri=f"{TRADEVILLE_URI}:{TRADEVILLE_PORT}", subprotocols=["apitv"]
+            uri=f"{config.TRADEVILLE_URI}:{config.TRADEVILLE_PORT}", subprotocols=["apitv"]
         ) as websocket:
             return await self.__send_and_receive(websocket, self.__tradeville_portfolio_header)
 
     async def subscribe_to_symbol(self, symbol):
         '''Efectueaza abonarea la unul sau mai multe simboluri'''
         async with websockets.connect(
-            uri=f"{TRADEVILLE_URI}:{TRADEVILLE_PORT}", subprotocols=["apitv"]
+            uri=f"{config.TRADEVILLE_URI}:{config.TRADEVILLE_PORT}", subprotocols=["apitv"]
         ) as websocket:
             await self.__login(websocket)
             tradeville_subscribe_header = {
@@ -82,7 +81,7 @@ class TradevilleAPI:
         :param date_end: end date in format: dmmmyy (ex: 1oct20)
         '''
         async with websockets.connect(
-            uri=f"{TRADEVILLE_URI}:{TRADEVILLE_PORT}", subprotocols=["apitv"]
+            uri=f"{config.TRADEVILLE_URI}:{config.TRADEVILLE_PORT}", subprotocols=["apitv"]
         ) as websocket:
             header = {
                 "cmd": "FXBNR",
@@ -100,7 +99,7 @@ class TradevilleAPI:
         #header = '{ "cmd": "Activity", "prm": { "symbol": null, "dstart": "1jan25", "dend": "10oct25" } }'
         print(header)
         async with websockets.connect(
-                uri=f"{TRADEVILLE_URI}:{TRADEVILLE_PORT}", subprotocols=["apitv"]
+                uri=f"{config.TRADEVILLE_URI}:{config.TRADEVILLE_PORT}", subprotocols=["apitv"]
         ) as websocket:
             await self.__login(websocket)
             await websocket.send(header)
@@ -112,7 +111,7 @@ class TradevilleAPI:
     async def search_symbol(self, symbol_substring):
         '''Returneaza date despre simbolurile care contin termenul cautarii in denumire'''
         async with websockets.connect(
-            uri=f"{TRADEVILLE_URI}:{TRADEVILLE_PORT}", subprotocols=["apitv"]
+            uri=f"{config.TRADEVILLE_URI}:{config.TRADEVILLE_PORT}", subprotocols=["apitv"]
         ) as websocket:
             header = {
                 "cmd": "SearchSymbol",
@@ -125,7 +124,7 @@ class TradevilleAPI:
     async def get_symbol_orders(self, symbol):
         '''Returneaza oridinele pe un anumit simbol'''
         async with websockets.connect(
-            uri=f"{TRADEVILLE_URI}:{TRADEVILLE_PORT}", subprotocols=["apitv"]
+            uri=f"{config.TRADEVILLE_URI}:{config.TRADEVILLE_PORT}", subprotocols=["apitv"]
         ) as websocket:
             header = {
                 "cmd": "Symbol",
@@ -136,7 +135,7 @@ class TradevilleAPI:
     async def get_symbol_data(self, symbol):
         '''Returneaza datele principale ale unui simbol'''
         async with websockets.connect(
-            uri=f"{TRADEVILLE_URI}:{TRADEVILLE_PORT}", subprotocols=["apitv"]
+            uri=f"{config.TRADEVILLE_URI}:{config.TRADEVILLE_PORT}", subprotocols=["apitv"]
         ) as websocket:
             header = {
                 "cmd": "Symbol",
@@ -147,7 +146,7 @@ class TradevilleAPI:
     async def get_symbol_market_depth(self, symbol, levels):
         '''Returneaza adancimea de piata a unui simbol'''
         async with websockets.connect(
-            uri=f"{TRADEVILLE_URI}:{TRADEVILLE_PORT}", subprotocols=["apitv"]
+            uri=f"{config.TRADEVILLE_URI}:{config.TRADEVILLE_PORT}", subprotocols=["apitv"]
         ) as websocket:
             header = {
                 "cmd": "Level2",
@@ -161,7 +160,7 @@ class TradevilleAPI:
     async def get_symbol_daily_values(self, symbol, date_start, date_end):
         '''Returneaza valorile zilnice ale simbolului, in perioada selectata'''
         async with websockets.connect(
-            uri=f"{TRADEVILLE_URI}:{TRADEVILLE_PORT}", subprotocols=["apitv"]
+            uri=f"{config.TRADEVILLE_URI}:{config.TRADEVILLE_PORT}", subprotocols=["apitv"]
         ) as websocket:
             # header = '{ "cmd": "DailyValues", "prm": { "symbol": "BRD", "dstart": "1jan19", "dend": null } }'
             header = f'{{ "cmd": "DailyValues", "prm": {{ "symbol": "{symbol}", "dstart": "{date_start}", "dend": "{date_end}" }} }}'
@@ -174,7 +173,7 @@ class TradevilleAPI:
     async def get_symbol_trades(self, symbol, date_start, date_end):
         '''Returneaza toate tranzactiile efectuate pe un simbol, intr-un anumit interval'''
         async with websockets.connect(
-            uri=f"{TRADEVILLE_URI}:{TRADEVILLE_PORT}", subprotocols=["apitv"]
+            uri=f"{config.TRADEVILLE_URI}:{config.TRADEVILLE_PORT}", subprotocols=["apitv"]
         ) as websocket:
             header = {
                 "cmd": "Trades",
