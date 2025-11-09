@@ -22,10 +22,12 @@ class Validator:
     def validate_portfolio_snapshot(self, last_snapshot_df: pd.DataFrame, new_snapshot_df: pd.DataFrame):
         if last_snapshot_df.empty:
             return new_snapshot_df
+        # latest_date = last_snapshot_df["SnapshotDate"].iloc[0]
+        # filtered_df = new_snapshot_df[new_snapshot_df["SnapshotDate"] > latest_date]
 
-        latest_date = last_snapshot_df["SnapshotDate"].iloc[0]
+        latest_date = pd.to_datetime(last_snapshot_df["SnapshotDate"].iloc[0])
+        new_snapshot_df["SnapshotDate"] = pd.to_datetime(new_snapshot_df["SnapshotDate"])
         filtered_df = new_snapshot_df[new_snapshot_df["SnapshotDate"] > latest_date]
-
         return filtered_df
 
     def validate_portfolio_symbols_daily_values(self, latest_daily_values_record_df: pd.DataFrame, new_daily_values_df: pd.DataFrame):
@@ -41,10 +43,13 @@ class Validator:
     def validate_account_activity(self, latest_account_activity: pd.DataFrame, new_account_activity: pd.DataFrame):
         if latest_account_activity.empty:
             return new_account_activity
+        # latest_date = latest_account_activity["Date"].iloc[0]
+        # filtered_df = new_account_activity[new_account_activity["Date"] > latest_date]
 
-        latest_date = latest_account_activity["Date"].iloc[0]
+        latest_date = pd.to_datetime(latest_account_activity["Date"].iloc[0])
+        new_account_activity["Date"] = pd.to_datetime(new_account_activity["Date"])
+
         filtered_df = new_account_activity[new_account_activity["Date"] > latest_date]
-
         return filtered_df
 
 

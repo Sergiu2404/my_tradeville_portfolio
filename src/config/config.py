@@ -74,6 +74,8 @@ DBNAME = os.environ.get("SUPABASE_DATABASE")
 
 SUPABASE_URI = os.environ.get("SUPABASE_URI")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
+# SUPABASE_URI = dotenv.dotenv_values("./../.env")["SUPABASE_URI"]
+# SUPABASE_KEY = dotenv.dotenv_values("./../.env")["SUPABASE_KEY"]
 
 TODAY = datetime.today().strftime("%Y-%m-%d")
 SEVEN_DAYS_AGO = datetime.today() - timedelta(days=7)
@@ -100,7 +102,7 @@ STOCK_SYMBOLS_COLUMNS_TYPES_MAP = {
 # Tradeville API
 TRADEVILLE_PORT = "443"
 TRADEVILLE_URI = "wss://api.tradeville.ro"
-TRADEVILLE_USER = os.environ.get("USR"),
-TRADEVILLE_PASSWORD = os.environ.get("PSWD"),
+TRADEVILLE_USER = os.environ.get("USR")
+TRADEVILLE_PASSWORD = os.environ.get("PSWD")
 # TRADEVILLE_USER = dotenv.dotenv_values("./../.env")["CODUSER"],
 # TRADEVILLE_PASSWORD = dotenv.dotenv_values("./../.env")["PASSWORD"],
