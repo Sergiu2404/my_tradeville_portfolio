@@ -72,6 +72,9 @@ DBNAME = os.environ.get("SUPABASE_DATABASE")
 # PORT = dotenv.dotenv_values("./../.env")["SUPABASE_PORT"]
 # DBNAME = dotenv.dotenv_values("./../.env")["SUPABASE_DATABASE"]
 
+SUPABASE_URI = os.environ.get("SUPABASE_URI")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
+
 TODAY = datetime.today().strftime("%Y-%m-%d")
 SEVEN_DAYS_AGO = datetime.today() - timedelta(days=7)
 SEVEN_DAYS_AGO = SEVEN_DAYS_AGO.strftime("%Y-%m-%d")

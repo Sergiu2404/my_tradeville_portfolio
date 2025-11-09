@@ -12,7 +12,8 @@ from src.storage.db_context import DbContext
 from src.config import config
 
 async def main():
-    db = DbContext(config.USER, config.PASSWORD, config.HOST, config.PORT, config.DBNAME)
+    # db = DbContext(config.USER, config.PASSWORD, config.HOST, config.PORT, config.DBNAME)
+    db = DbContext(config.SUPABASE_URI, config.SUPABASE_KEY)
     ingestor = MarketDataIngestor(TradevilleAPI(), YahooFinanceAPI())
     validator = Validator()
 
