@@ -27,6 +27,8 @@ jobs:
           SUPABASE_HOST: ${{secrets.SUPABASE_HOST}}
           SUPABASE_PORT: ${{secrets.SUPABASE_PORT}}
           SUPABASE_DATABASE: ${{secrets.SUPABASE_DATABASE}}
+          SUPABASE_URI: ${{secrets.SUPABASE_URI}}
+          SUPABASE_KEY: ${{secrets.SUPABASE_KEY}}
           PSWD: ${{secrets.PSWD}}
           USR: ${{secrets.USR}}
         run: python -m src.main
