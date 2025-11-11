@@ -10,6 +10,7 @@ from src.pipelines.portfolio_snapshot_pipeline import PortfolioSnapshotPipeline
 from src.pipelines.portfolio_symbols_daily_values import PortfolioSymbolsDailyValues
 from src.storage.db_context import DbContext
 from src.config import config
+from src.storage.postgres_db_context import PostgresDbContext
 
 async def main():
     # db = DbContext(config.USER, config.PASSWORD, config.HOST, config.PORT, config.DBNAME)
@@ -33,8 +34,16 @@ if __name__ == '__main__':
 
 # from src.config import config
 # from src.storage.db_context import DbContext
-# db_context = DbContext(config.USER, config.PASSWORD, config.HOST, config.PORT, config.DBNAME)
-# db_context.drop_table(config.DIVIDENDS_TABLE)
-# db_context.drop_table(config.PORTFOLIO_SNAPSHOTS_TABLE)
-# db_context.drop_table(config.PORTFOLIO_SYMBOLS_DAILY_VALUES_TABLE)
-# db_context.drop_table(config.ACCOUNT_ACTIVITY_TABLE)
+# from src.storage.postgres_db_context import PostgresDbContext
+#
+# postgres_db_context = PostgresDbContext(config.USER, config.PASSWORD, config.HOST, config.PORT, config.DBNAME)
+# postgres_db_context.drop_table(config.DIVIDENDS_TABLE)
+# postgres_db_context.drop_table(config.PORTFOLIO_SNAPSHOTS_TABLE)
+# postgres_db_context.drop_table(config.PORTFOLIO_SYMBOLS_DAILY_VALUES_TABLE)
+# postgres_db_context.drop_table(config.ACCOUNT_ACTIVITY_TABLE)
+
+# postgres_db_context = PostgresDbContext(config.USER, config.PASSWORD, config.HOST, config.PORT, config.DBNAME)
+# postgres_db_context.create_table(config.DIVIDENDS_COLUMNS_MAP, config.DIVIDENDS_TABLE)
+# postgres_db_context.create_table(config.PORTFOLIO_SNAPSHOTS_COLUMNS_MAP, config.PORTFOLIO_SNAPSHOTS_TABLE)
+# postgres_db_context.create_table(config.PORTFOLIO_SYMBOLS_DAILY_VALUES_COLUMNS_MAP, config.PORTFOLIO_SYMBOLS_DAILY_VALUES_TABLE)
+# postgres_db_context.create_table(config.ACCOUNT_ACTIVITY_COLUMNS_MAP, config.ACCOUNT_ACTIVITY_TABLE)
