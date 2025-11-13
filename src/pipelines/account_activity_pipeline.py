@@ -1,10 +1,12 @@
+import numpy as np
+import pandas as pd
+
 from src.pipelines.base_pipeline import BasePipeline
 from src.config import config
 
 class AccountActivityPipeline(BasePipeline):
     async def run(self):
         new_df = await self.ingestor.get_account_activity(config.SEVEN_DAYS_AGO, config.TODAY)
-
         if new_df.empty:
             print("no new account activity data to process.")
             return
@@ -15,6 +17,7 @@ class AccountActivityPipeline(BasePipeline):
 
         filtered_df = self.validator.validate_account_activity(existing_df, new_df)
         if not filtered_df.empty:
+            filtered_df = filtered_df.replace({np.nan: None, np.inf: None, -np.inf: None})
             self.db.insert_df_into_table(filtered_df, config.ACCOUNT_ACTIVITY_TABLE)
         # self.db.insert_df_into_table(filtered_df, config.ACCOUNT_ACTIVITY_TABLE)
 

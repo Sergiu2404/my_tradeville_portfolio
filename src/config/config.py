@@ -104,5 +104,5 @@ TRADEVILLE_PORT = "443"
 TRADEVILLE_URI = "wss://api.tradeville.ro"
 TRADEVILLE_USER = os.environ.get("USR")
 TRADEVILLE_PASSWORD = os.environ.get("PSWD")
-# TRADEVILLE_USER = dotenv.dotenv_values("./../.env")["CODUSER"],
-# TRADEVILLE_PASSWORD = dotenv.dotenv_values("./../.env")["PASSWORD"],
+# TRADEVILLE_USER = dotenv.dotenv_values("./../.env")["CODUSER"]
+# TRADEVILLE_PASSWORD = dotenv.dotenv_values("./../.env")["PASSWORD"]

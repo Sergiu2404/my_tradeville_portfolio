@@ -6,7 +6,6 @@ from src.config import config
 class PortfolioSymbolsDailyValues(BasePipeline):
     async def run(self):
         new_df = await self.ingestor.get_portfolio_daily_data(config.SEVEN_DAYS_AGO, config.TODAY)
-
         if new_df.empty:
             print("no new portfolio daily values data to process.")
             return
