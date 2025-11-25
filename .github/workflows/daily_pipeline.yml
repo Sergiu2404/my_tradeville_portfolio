@@ -32,3 +32,10 @@ jobs:
           PSWD: ${{secrets.PSWD}}
           USR: ${{secrets.USR}}
         run: python -m src.main
+
+      - name: Keep Supabase Alive
+        run: |
+          curl -X GET \
+                      "${{ secrets.SUPABASE_HOST }}/rest/v1/account_activity?select=id&limit=1" \
+                      -H "apikey: ${{ secrets.SUPABASE_KEY }}" \
+                      -H "Authorization: Bearer ${{ secrets.SUPABASE_KEY }}"
