@@ -1,3 +1,5 @@
+import pandas as pd
+
 from src.pipelines.base_pipeline import BasePipeline
 from src.config import config
 
@@ -14,7 +16,14 @@ class DividendsPipeline(BasePipeline):
 
         filtered_df = self.validator.validate_dividends(existing_df, new_df)
         if not filtered_df.empty:
+            for col in filtered_df.select_dtypes(include=["datetime64[ns]"]).columns:
+                filtered_df[col] = filtered_df[col].dt.strftime("%Y-%m-%d")
+
+            filtered_df = filtered_df.where(pd.notnull(filtered_df), None)
             self.db.insert_df_into_table(filtered_df, config.DIVIDENDS_TABLE)
-        # self.db.insert_df_into_table(filtered_df, config.DIVIDENDS_TABLE)
+
+        # filtered_df = self.validator.validate_dividends(existing_df, new_df)
+        # if not filtered_df.empty:
+        #     self.db.insert_df_into_table(filtered_df, config.DIVIDENDS_TABLE)
 
         print("dividends pipeline finished")

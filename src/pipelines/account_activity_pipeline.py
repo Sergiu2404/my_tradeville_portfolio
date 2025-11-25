@@ -17,6 +17,9 @@ class AccountActivityPipeline(BasePipeline):
 
         filtered_df = self.validator.validate_account_activity(existing_df, new_df)
         if not filtered_df.empty:
+            for col in filtered_df.select_dtypes(include=["datetime64[ns]"]).columns:
+                filtered_df[col] = filtered_df[col].dt.strftime("%Y-%m-%d")
+
             filtered_df = filtered_df.replace({np.nan: None, np.inf: None, -np.inf: None})
             self.db.insert_df_into_table(filtered_df, config.ACCOUNT_ACTIVITY_TABLE)
         # self.db.insert_df_into_table(filtered_df, config.ACCOUNT_ACTIVITY_TABLE)
