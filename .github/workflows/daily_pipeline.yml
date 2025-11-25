@@ -34,8 +34,15 @@ jobs:
         run: python -m src.main
 
       - name: Keep Supabase Alive
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URI }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
         run: |
-          curl -X GET \
-                      "${{ secrets.SUPABASE_HOST }}/rest/v1/account_activity?select=id&limit=1" \
-                      -H "apikey: ${{ secrets.SUPABASE_KEY }}" \
-                      -H "Authorization: Bearer ${{ secrets.SUPABASE_KEY }}"
+          python - <<EOF
+          from supabase import create_client
+          url = "${SUPABASE_URL}"
+          key = "${SUPABASE_KEY}"
+          client = create_client(url, key)
+          client.table("account_activity").select("id").limit(1).execute()
+          print("Supabase ping successful")
+          EOF
